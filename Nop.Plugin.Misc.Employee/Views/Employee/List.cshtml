@@ -1,0 +1,281 @@
+﻿@model EmployeeSearchModel
+
+@{
+    ViewBag.PageTitle = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES).Text;
+    NopHtml.SetActiveMenuItemSystemName("Employees");
+}
+
+@{
+    const string hideSearchBlockAttributeName = "EmployeeListPage.HideSearchBlock";
+    var hideSearchBlock = await genericAttributeService.GetAttributeAsync<bool>(await
+        workContext.GetCurrentCustomerAsync(), hideSearchBlockAttributeName);
+}
+
+
+<form asp-controller="Employee" asp-action="List" method="post">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T("Admin.Catalog.Employees")
+        </h1>
+        <div class="float-right">
+            <a class="btn btn-primary" asp-controller="Employee" asp-action="Create">
+                <i class="fas fa-plus-square"> </i>
+                @T("Admin.Common.AddNew")
+            </a>
+
+
+            <button type="button" id="delete-selected" class="btn btn-danger">
+                <i class="far fa-trash-alt"></i>
+                @T("Admin.Common.Delete.Selected")
+            </button>
+            <nop-action-confirmation asp-button-id="delete-selected" />
+
+            @await Component.InvokeAsync(typeof(AdminWidgetViewComponent), new { widgetZone = AdminWidgetZones.CategoryListButtons, additionalData = Model })
+        </div>
+    </div>
+
+    <section class="content">
+        <div class="container-fluid">
+            <div class="form-horizontal">
+                <div class="cards-group">
+                    <div class="card card-default card-search">
+                        <div class="card-body">
+                            <div class="row search-row @(!hideSearchBlock ? "opened" : "")" data-hideAttribute="@hideSearchBlockAttributeName">
+                                <div class="search-text">@T("Admin.Common.Search")</div>
+                                <div class="icon-search"><i class="fas fa-search" aria-hidden="true"></i></div>
+                                <div class="icon-collapse"><i class="far fa-angle-@(!hideSearchBlock ? "up" : "down")" aria-hidden="true"></i></div>
+                            </div>
+                            <div class="search-body @(hideSearchBlock ? "closed" : "")">
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchEmployeeName" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchEmployeeName" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchEmailAddress" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchEmailAddress" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="SearchPhoneNo" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="SearchPhoneNo" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="CurrentlyWorking" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-editor asp-for="CurrentlyWorking" />
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <div class="col-md-4">
+                                                <nop-label asp-for="EmployeeRole" />
+                                            </div>
+                                            <div class="col-md-8">
+                                                <nop-select asp-for="EmployeeRole" asp-items="Model.AvailableRoles" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="text-center col-12">
+                                        <button type="button" id="search-employee" class="btn btn-primary btn-search">
+                                            <i class="fas fa-search"></i>
+                                            @T("Admin.Common.Search")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card card-default">
+                        <div class="card-body">
+                            <nop-doc-reference asp-string-resource="@T("Admin.Documentation.Reference.Products", Docs.Products + Utm.OnAdmin)" />
+
+                            @await Html.PartialAsync("Table", new DataTablesModel
+                       {
+                           Name = "employees-grid",
+                           UrlRead = new DataUrl("List", "Employee", null),
+                           SearchButtonId = "search-employee",
+                           Length = Model.PageSize,
+                           LengthMenu = Model.AvailablePageSizes,
+                           Filters = new List<FilterParameter>
+                            {
+                            new FilterParameter(nameof(Model.SearchEmployeeName)),
+                            new FilterParameter(nameof(Model.SearchEmailAddress)),
+                            new FilterParameter(nameof(Model.SearchPhoneNo)),
+                            new FilterParameter(nameof(Model.CurrentlyWorking), typeof(bool)),
+                            new FilterParameter(nameof(Model.EmployeeRole)),
+
+                            },
+                           ColumnCollection = new List<ColumnProperty>
+                            {
+                            new ColumnProperty(nameof(EmployeeModel.Id))
+                            {
+                            IsMasterCheckBox = true,
+                            Render = new RenderCheckBox("checkbox_employees"),
+                            ClassName = NopColumnClassDefaults.CenterAll,
+                            Width = "50"
+                            },
+                            new ColumnProperty(nameof(EmployeeModel.Name))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_NAME).Text,
+
+                            },
+                            new ColumnProperty(nameof(EmployeeModel.Email))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_EMAIL).Text,
+                            AutoWidth = true
+
+                            },
+                            new ColumnProperty(nameof(EmployeeModel.Phone))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_PHONE).Text,
+                            AutoWidth = true
+
+                            },
+                            new ColumnProperty(nameof(EmployeeModel.DateOfBirth))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_DATE_OF_BIRTH).Text,
+                            Render = new RenderDate() {Format = "L"},
+                            Width = "50"
+                            },
+
+                            new ColumnProperty(nameof(EmployeeModel.JoinedDate))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_JOINED_DATE).Text,
+                            Render = new RenderDate() {Format = "L"},
+                            Width = "50"
+                            },
+                            new ColumnProperty(nameof(EmployeeModel.CurrentlyWorking))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_CURRENTLY_WORKING).Text,
+                            Width = "50",
+                            ClassName = NopColumnClassDefaults.CenterAll,
+                            Render = new RenderBoolean()
+
+                            },
+                            new ColumnProperty(nameof(EmployeeModel.EmployeeRoleName))
+                            {
+                            Title = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_FIELDS_EMPLOYEE_ROLE_NAME).Text,
+                            Width = "70",
+                            },
+                            new ColumnProperty(nameof(ProductModel.Id))
+                            {
+                            Title = T("Admin.Common.Edit").Text,
+                            Width = "80",
+                            ClassName =  NopColumnClassDefaults.Button,
+                            Render = new RenderButtonEdit(new DataUrl("Edit"))
+                            }
+                            }
+                       })
+                            <script>
+                                $(document).ready(function () {
+                                    $('#delete-selected-action-confirmation-submit-button').bind('click', function () {
+                                        let postData = {
+                                            selectedIds: selectedIds
+                                        };
+                                        addAntiForgeryToken(postData);
+                                        $.ajax({
+                                            cache: false,
+                                            type: "POST",
+                                            url: "@(Url.Action("DeleteSelected", "Employee"))",
+                                            data: postData,
+                                            error: function (jqXHR, textStatus, errorThrown) {
+                                                showAlert('deleteSelectedFailed', errorThrown);
+                                            },
+                                            complete: function (jqXHR, textStatus) {
+                                                if (jqXHR.status === 204) {
+                                                    showAlert('nothingSelectedAlert', '@T("Admin.Common.Alert.NothingSelected")');
+                                                    return;
+                                                }
+                                                updateTable('#employees-grid');
+                                            }
+                                        });
+                                        $('#delete-selected-action-confirmation').modal('toggle');
+                                        return false;
+                                    });
+                                });
+                            </script>
+                            <nop-alert asp-alert-id="deleteSelectedFailed" />
+                            <nop-alert asp-alert-id="nothingSelectedAlert" />
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </section>
+</form>
+
+
+
+<script>
+    $(document).ready(function () {
+        $('#select-all').change(function () {
+            $('.employee-checkbox').prop('checked', $(this).prop('checked'));
+        });
+    });
+</script>
+
+
+<script>
+
+    $(document).ready(function () {
+        // Function to handle deletion of selected entries
+        $('#delete-selected').click(function () {
+            // Array to store the IDs of selected entries
+            let selectedIds = [];
+
+            // Iterate over all checkboxes with the class "employee-checkbox"
+            $('.employee-checkbox:checked').each(function () {
+                // Get the ID of the selected entry
+                let id = parseInt($(this).attr('id')); // Parse ID to integer
+                // Add the ID to the selectedIds array
+                selectedIds.push(id);
+            });
+
+            // Check if any entries are selected
+            if (selectedIds.length > 0) {
+                // Perform AJAX request to delete selected entries
+                $.ajax({
+                    type: 'POST', // Or 'DELETE' depending on your backend setup
+                    url: '@Url.Action("Delete", "Employee")', // URL to your backend endpoint
+                    data: JSON.stringify(selectedIds), // Send the selected IDs as JSON data
+                    contentType: 'application/json',
+                    success: function (response) {
+                        // Handle success response
+                        console.log('Selected entries deleted successfully.');
+                        // Optionally, you can reload the page or update the UI
+                        location.reload(); // Reload the page
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error response
+                        console.error('Error deleting selected entries:', error);
+                        // Optionally, display an error message to the user
+                    }
+                });
+            } else {
+                // If no entries are selected, display a message to the user or handle as needed
+                console.log('No entries selected for deletion.');
+            }
+        });
+    });
+
+</script>

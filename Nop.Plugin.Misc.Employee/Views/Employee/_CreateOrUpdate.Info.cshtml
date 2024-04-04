@@ -1,0 +1,89 @@
+﻿@model EmployeeModel
+
+@{
+
+    IList<SelectListItem> roleItems = Enum.GetValues(typeof(EmployeeRole)).Cast<EmployeeRole>()
+                                        .Where(e => e != EmployeeRole.All).Select(e => new SelectListItem
+                                                {
+                                                    Text = e.ToString(),
+                                                    Value = e.ToString()
+                                                }).ToList();
+}
+
+<script src="~/lib_npm/jquery-tageditor/jquery.caret.min.js"></script>
+<script src="~/lib_npm/jquery-tageditor/jquery.tag-editor.min.js"></script>
+<link rel="stylesheet" href="~/lib_npm/jquery-tageditor/jquery.tag-editor.css">
+
+<div class="card-body">
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Name" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Name" />
+            <span asp-validation-for="Name"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Email" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="Phone" />
+        </div>
+        <div class="col-md-9">
+            <nop-editor asp-for="Phone" />
+            <span asp-validation-for="Phone"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="DateOfBirth" />
+        </div>
+        <div class="col-md-9">
+            <input class="form-control" type="date" name="DateOfBirth" value="@Model.DateOfBirth?.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="DateOfBirth"></span>
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="JoinedDate" />
+        </div>
+        <div class="col-md-9">
+            <input class="form-control" type="date" name="JoinedDate" value="@Model.JoinedDate?.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="JoinedDate"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="LeaveDate" />
+        </div>
+        <div class="col-md-9">
+            <input class="form-control" type="date" name="LeaveDate" value="@Model.LeaveDate?.ToString("yyyy-MM-dd")" />
+            <span asp-validation-for="LeaveDate"></span>
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <div class="col-md-3">
+            <nop-label asp-for="EmployeeRoleName" />
+        </div>
+        <div class="col-md-9">
+            <nop-select asp-for="EmployeeRoleName" asp-items="roleItems" />
+            <span asp-validation-for="EmployeeRoleName"></span>
+        </div>
+    </div>
+</div>

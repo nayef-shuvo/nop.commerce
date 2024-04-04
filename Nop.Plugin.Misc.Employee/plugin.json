@@ -1,0 +1,11 @@
+{
+  "Group": "Misc",
+  "FriendlyName": "Employee Management",
+  "SystemName": "Misc.EmployeeManagement",
+  "Version": "1.0.0",
+  "SupportedVersions": [ "4.70" ],
+  "Author": "nayef.mahbub@brainstation-23.com",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.EmployeeManagement.dll",
+  "Description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+}

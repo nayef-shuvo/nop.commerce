@@ -1,0 +1,40 @@
+﻿@model EmployeeModel
+
+@{
+    ViewBag.PageTitle = T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_EDIT_EMPLOYEE_DETAILS).Text;
+    NopHtml.SetActiveMenuItemSystemName("Employees");
+}
+
+
+<form asp-controller="Employee" asp-action="Edit" method="post" id="employee-form">
+    <div class="content-header clearfix">
+        <h1 class="float-left">
+            @T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_EDIT)
+            <small>
+                <i class="fas fa-arrow-circle-left"></i>
+                <a asp-action="List">@T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_BACK_TO_LIST)</a>
+            </small>
+        </h1>
+        <div class="float-right">
+            <button type="submit" name="save" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.Save")
+            </button>
+            <button type="submit" name="save-continue" class="btn btn-primary">
+                <i class="far fa-save"></i>
+                @T("Admin.Common.SaveContinue")
+            </button>
+            <button type="button" name="copyemployee" class="btn bg-olive" data-toggle="modal" data-target="#copyemployee-window">
+                <i class="far fa-clone"></i>
+                @T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_COPY)
+            </button>
+            <span id="employee-delete" class="btn btn-danger">
+                <i class="far fa-trash-alt"></i>
+                @T("Admin.Common.Delete")
+            </span>
+        </div>
+    </div>
+    @await Html.PartialAsync("_CreateOrUpdate", Model)
+</form>
+
+<nop-delete-confirmation asp-model-id="@Model.Id" asp-button-id="employee-delete" />

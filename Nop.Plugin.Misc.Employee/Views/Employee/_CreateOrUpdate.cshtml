@@ -1,0 +1,21 @@
+﻿@model EmployeeModel
+
+@{
+    const string hideInfoBlockAttributeName = "ProductPage.HideInfoBlock";
+    var hideInfochBlock = await genericAttributeService.GetAttributeAsync<bool>(await
+        workContext.GetCurrentCustomerAsync(), hideInfoBlockAttributeName);
+
+
+    EmployeeModel model = Model;
+}
+
+<section class="content">
+    <div class="container-fuild">
+        <div class="form-horizontal">
+            <nop-cards id="employee-cards">
+                <nop-card asp-name="employee-info" asp-icon="fas fa-info" asp-title="@T(EmployeeManagementDefaults.ADMIN_CATALOG_EMPLOYEES_INFO)" asp-hide-block-attribute-name="@hideInfoBlockAttributeName" asp-hide="@hideInfochBlock">@await Html.PartialAsync("_CreateOrUpdate.Info", model)</nop-card>
+            </nop-cards>
+
+        </div>
+    </div>
+</section>
