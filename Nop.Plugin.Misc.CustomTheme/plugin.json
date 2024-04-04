@@ -1,0 +1,11 @@
+{
+  "Group": "Misc",
+  "FriendlyName": "Custom Theme",
+  "SystemName": "Misc.CustomTheme",
+  "Version": "1.0.0",
+  "SupportedVersions": [ "4.70" ],
+  "Author": "nopCommerce team",
+  "DisplayOrder": 1,
+  "FileName": "Nop.Plugin.Misc.CustomTheme.dll",
+  "Description": "Custom theme"
+}
